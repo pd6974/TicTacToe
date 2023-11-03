@@ -8,4 +8,8 @@
 
 .grid {
     background-color: green;
+    display: flex;
+    align-items: center;
+    font-size: 48pt;
+    justify-content: center;
 }
