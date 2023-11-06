@@ -1,9 +1,15 @@
+.body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
 .container {
     height: 80vh;
     display: grid;
     grid-template-columns: repeat(3, 200px);
     grid-template-rows: repeat(3, 200px);
     gap: 12px;
+    background-color: aliceblue;
 }
 
 .grid {
@@ -12,4 +18,10 @@
     align-items: center;
     font-size: 48pt;
     justify-content: center;
+}
+
+.info {
+    background-color: black;
+    color: white;
+    font-size: 28pt;
 }
