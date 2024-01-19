@@ -117,27 +117,36 @@ function GameController(
               such as a win message. */
 
         if (counter >= 5) {
-            const xLocales = [];
-            const oLocales = [];
+            //Get the current board
             const currentBoard = board.getBoard();
 
             //Loops first place in each array:
             for (let i = 0; i < currentBoard.length; i++) {
-                const marking = currentBoard[i][0].getValue();
+                const marking = currentBoard[0][i].getValue();
                 console.log(marking);
                 if (marking == 'x') {
-                    const markingTwo = currentBoard[i][1].getValue();
-                    const markingThree = currentBoard[i][2].getValue();
+                    //This loop only properly checks when i = 0, it will check the vertical correctly for i = 1.  Is there a better way to check for these wins?
+                    const vertTwo = currentBoard[1][i].getValue();
+                    const vertThree = currentBoard[2][i].getValue();
+                    const horzTwo = currentBoard[i][1].getValue();
+                    const horzThree = currentBoard[i][1].getValue();
+                    const diagTwo = currentBoard[1][1].getValue();
+                    const diagThree = currentBoard[2][2].getValue();
                     console.log(markingThree);
-                    if (marking == markingTwo && marking == markingThree) {
-                        console.log("Winner")
-                    } else {
-
+                    if (marking == horzTwo && marking == horzThree) {
+                        console.log("Winner");
+                        break
+                    } else if (marking == vertTwo && marking == vertThree) {
+                        console.log("Winner");
+                        break
+                    } else if (marking == diagTwo && marking == diagThree) {
+                        console.log("winner");
+                        break
                     }
 
                 } else if (marking == 'o') {
-                    const markingTwo = currentBoard[i][1].getValue();
-                    const markingThree = currentBoard[i][2].getValue();
+                    const markingTwo = currentBoard[1][i].getValue();
+                    const markingThree = currentBoard[2][i].getValue();
                     if (marking == markingTwo && marking == markingThree) {
                         console.log("Winner")
                     } else {
