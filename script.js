@@ -122,38 +122,49 @@ function GameController(
 
             //Loops first place in each array:
             for (let i = 0; i < currentBoard.length; i++) {
-                const marking = currentBoard[0][i].getValue();
-                console.log(marking);
-                if (marking == 'x') {
-                    //This loop only properly checks when i = 0, it will check the vertical correctly for i = 1.  Is there a better way to check for these wins?
-                    const vertTwo = currentBoard[1][i].getValue();
-                    const vertThree = currentBoard[2][i].getValue();
-                    const horzTwo = currentBoard[i][1].getValue();
-                    const horzThree = currentBoard[i][1].getValue();
-                    const diagTwo = currentBoard[1][1].getValue();
-                    const diagThree = currentBoard[2][2].getValue();
-                    console.log(markingThree);
-                    if (marking == horzTwo && marking == horzThree) {
-                        console.log("Winner");
-                        break
-                    } else if (marking == vertTwo && marking == vertThree) {
-                        console.log("Winner");
-                        break
-                    } else if (marking == diagTwo && marking == diagThree) {
-                        console.log("winner");
-                        break
+                //This condition properly checks for 3 wins top horizontal, vertical left, and \ diagnol
+                //Is there a better way to check for these wins?
+                if (i = 0) {
+                    const marking = currentBoard[0][i].getValue();
+                    console.log(marking);
+                    if (marking == 'x') {
+                        const vertTwo = currentBoard[1][i].getValue();
+                        const vertThree = currentBoard[2][i].getValue();
+                        const horzTwo = currentBoard[i][1].getValue();
+                        const horzThree = currentBoard[i][2].getValue();
+                        const diagTwo = currentBoard[1][1].getValue();
+                        const diagThree = currentBoard[2][2].getValue();
+                        if ((marking == horzTwo && marking == horzThree) || (marking == vertTwo && marking == vertThree) || (marking == diagTwo && marking == diagThree)) {
+                            console.log("Winner");
+                            break
+                        }
                     }
-
-                } else if (marking == 'o') {
-                    const markingTwo = currentBoard[1][i].getValue();
-                    const markingThree = currentBoard[2][i].getValue();
-                    if (marking == markingTwo && marking == markingThree) {
-                        console.log("Winner")
-                    } else {
+                    else if (marking == 'o') {
+                        const vertTwo = currentBoard[1][i].getValue();
+                        const vertThree = currentBoard[2][i].getValue();
+                        const horzTwo = currentBoard[i][1].getValue();
+                        const horzThree = currentBoard[i][2].getValue();
+                        const diagTwo = currentBoard[1][1].getValue();
+                        const diagThree = currentBoard[2][2].getValue();
+                        if ((marking == horzTwo && marking == horzThree) || (marking == vertTwo && marking == vertThree) || (marking == diagTwo && marking == diagThree)) {
+                            console.log("Winner")
+                        } 
+                    }
+                    //This conditions checks for center vertical and horizontal wins.
+                } else if (i = 1) {
+                    const vertMarking = currentBoard[0][i].getValue();
+                    const horzMarking = currentBoard[i][0].getValue();
+                    console.log(marking);
+                    if (marking == 'x') {
+                        const center = currentBoard[i][i].getValue;
+                        const vertThree = currentBoard[2][i].getValue;
+                        const horzThree = currentBoard[i][2].getValue;
+                        if ((vertMarking == center && vertMarking == vertThree) || (horzMarking == center && horzMarking == horzThree)) {
+                            console.log("winner");
+                            break
+                        }
 
                     }
-
-                } else {
 
                 }
 
