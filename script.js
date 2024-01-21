@@ -110,7 +110,6 @@ function GameController(
 
         board.placeMark(row, column, activePlayer);
         counter++;
-        console.log(counter);
 
 
         /*  This is where we would check for a winner and handle that logic,
@@ -148,14 +147,22 @@ function GameController(
                         const diagThree = currentBoard[2][2].getValue();
                         if ((marking == horzTwo && marking == horzThree) || (marking == vertTwo && marking == vertThree) || (marking == diagTwo && marking == diagThree)) {
                             console.log("Winner")
-                        } 
+                        }
                     }
                     //This conditions checks for center vertical and horizontal wins.
                 } else if (i = 1) {
                     const vertMarking = currentBoard[0][i].getValue();
                     const horzMarking = currentBoard[i][0].getValue();
-                    console.log(marking);
-                    if (marking == 'x') {
+                    if (vertMarking == 'x' || horzMarking == 'x') {
+                        const center = currentBoard[i][i].getValue;
+                        const vertThree = currentBoard[2][i].getValue;
+                        const horzThree = currentBoard[i][2].getValue;
+                        if ((vertMarking == center && vertMarking == vertThree) || (horzMarking == center && horzMarking == horzThree)) {
+                            console.log("winner");
+                            break
+                        }
+
+                    } else if (vertMarking == 'o' || horzMarking == 'o') {
                         const center = currentBoard[i][i].getValue;
                         const vertThree = currentBoard[2][i].getValue;
                         const horzThree = currentBoard[i][2].getValue;
@@ -166,42 +173,60 @@ function GameController(
 
                     }
 
+                } else if (i = 2) {
+                    const marking = currentBoard[i][i].getValue();
+                    console.log(marking);
+                    if (marking == 'x') {
+                        const vertTwo = currentBoard[0][i].getValue();
+                        const vertThree = currentBoard[1][i].getValue();
+                        const horzTwo = currentBoard[i][0].getValue();
+                        const horzThree = currentBoard[i][1].getValue();
+                        const diagTwo = currentBoard[1][1].getValue();
+                        const diagThree = currentBoard[0][0].getValue();
+                        if ((marking == horzTwo && marking == horzThree) || (marking == vertTwo && marking == vertThree) || (marking == diagTwo && marking == diagThree)) {
+                            console.log("Winner");
+                            break
+                        }
+                    }
+                    else if (marking == 'o') {
+                        const vertTwo = currentBoard[0][i].getValue();
+                        const vertThree = currentBoard[1][i].getValue();
+                        const horzTwo = currentBoard[i][0].getValue();
+                        const horzThree = currentBoard[i][1].getValue();
+                        const diagTwo = currentBoard[1][1].getValue();
+                        const diagThree = currentBoard[0][0].getValue();
+                        if ((marking == horzTwo && marking == horzThree) || (marking == vertTwo && marking == vertThree) || (marking == diagTwo && marking == diagThree)) {
+                            console.log("Winner")
+                        }
+                    }
                 }
-
-
-
-
+                }
             }
-
+            // Switch player turn
+            switchPlayerTurn();
+            printNewRound();
 
         }
-        // Switch player turn
-        switchPlayerTurn();
+
+
+
+
+
+        // Initial play game message
         printNewRound();
 
-    }
+        // For the console version, we will only use playRound, but we will need
+        // getActivePlayer for the UI version, so I'm revealing it now
+        return {
+            playRound,
+            getActivePlayer
+        };
 
-
-
-
-
-    // Initial play game message
-    printNewRound();
-
-    // For the console version, we will only use playRound, but we will need
-    // getActivePlayer for the UI version, so I'm revealing it now
-    return {
-        playRound,
-        getActivePlayer
     };
 
-};
-
-const play = GameController();
-play.playRound(0, 0);
-play.playRound(2, 2);
-play.playRound(1, 0);
-play.playRound(2, 1);
-play.playRound(2, 0);
-
-
+    const play = GameController();
+    play.playRound(0, 0);
+    play.playRound(2, 2);
+    play.playRound(1, 0);
+    play.playRound(2, 1);
+    play.playRound(2, 0);
