@@ -1,3 +1,53 @@
+function Display() {
+    const game = GameController();
+    const messageDiv = document.querySelector('.info');
+    const boardDiv = document.querySelector('.container');
+    console.log(boardDiv);
+
+    const updateScreen = () => {
+        //clear the board
+        boardDiv.textContent = "";
+
+        //get the  newest version of the board
+        const board = game.getBoard();
+        const activePlayer = game.getActivePlayer();
+
+        messageDiv.textContent = `${activePlayer.name}'s turn... `;
+
+        board.forEach((row, index2) => {
+            row.forEach((cell, index) => {
+                // Anything clickable should be a button
+                const cellButton = document.createElement("button");
+                cellButton.classList.add("cell");
+                // Create a data attribute to identify the location
+                // Then it can be placed in the playRound function
+                cellButton.dataset.column = index
+                cellButton.dataset.row = index2
+                cellButton.textContent = cell.getValue();
+                boardDiv.appendChild(cellButton);
+            })
+        })
+    }
+
+
+//Adds event listener to the board
+function clickHandlerBoard(e) {
+    const selectedColumn = e.target.dataset.column;
+    const selectedRow =  e.target.dataset.row;
+    // Make sure I've clicked a column and not the gaps in between
+    if (!selectedColumn) return;
+    
+    game.playRound(selectedRow, selectedColumn);
+    updateScreen();
+  }
+  boardDiv.addEventListener("click", clickHandlerBoard);
+
+  // Initial render
+  updateScreen();
+
+  // We don't need to return anything from this module because everything is encapsulated inside this screen controller.
+}
+
 function Gameboard() {
     const rows = 3;
     const columns = 3;
@@ -50,7 +100,7 @@ function Gameboard() {
 */
 
 function Cell() {
-    let value = 0;
+    let value = "";
 
     // Accept a player's token to change the value of the cell
     const addToken = (player) => {
@@ -241,18 +291,11 @@ function GameController(
         // getActivePlayer for the UI version, so I'm revealing it now
         return {
             playRound,
-            getActivePlayer
+            getActivePlayer,
+            getBoard: board.getBoard,
+            winCheck
         };
 
     };
 
-    const play = GameController();
-    play.playRound(0, 1);
-    play.playRound(2, 2);
-    play.playRound(1, 0);
-    play.playRound(1, 1);
-    play.playRound(2, 1);
-    play.playRound(0, 2);
-    play.playRound(1, 2);
-    play.playRound(2, 0);
-    play.playRound(0, 0);
+    Display();
