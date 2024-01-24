@@ -115,7 +115,26 @@ function GameController(
         /*  This is where we would check for a winner and handle that logic,
               such as a win message. */
 
-        if (counter >= 5) {
+            //Find out if there's a winner
+            const result = winCheck();
+            console.log(result);
+
+            if (result == true) {
+                
+            } else if (result == false && counter == 9) {
+                console.log("It's a tie");
+            } else {
+                // Switch player turn
+                switchPlayerTurn();
+                printNewRound();
+            }
+            
+            
+
+        }
+        
+        //This function checks for a winner.  Could it return true/false?
+        const winCheck = ()  => {
             //Get the current board
             const currentBoard = board.getBoard();
 
@@ -134,7 +153,8 @@ function GameController(
                         const diagTwo = currentBoard[1][1].getValue();
                         const diagThree = currentBoard[2][2].getValue();
                         if ((marking == horzTwo && marking == horzThree) || (marking == vertTwo && marking == vertThree) || (marking == diagTwo && marking == diagThree)) {
-                            console.log("Winner");
+                            console.log(`${getActivePlayer().name} is the winner!`);
+                            return true;
                             break
                         }
                     }
@@ -146,7 +166,8 @@ function GameController(
                         const diagTwo = currentBoard[1][1].getValue();
                         const diagThree = currentBoard[2][2].getValue();
                         if ((marking == horzTwo && marking == horzThree) || (marking == vertTwo && marking == vertThree) || (marking == diagTwo && marking == diagThree)) {
-                            console.log("Winner")
+                            console.log(`${getActivePlayer().name} is the winner!`);
+                            return true;
                             break
                         }
                     }
@@ -159,7 +180,8 @@ function GameController(
                         const vertThree = currentBoard[2][i].getValue();
                         const horzThree = currentBoard[i][2].getValue();
                         if ((vertMarking == center && vertMarking == vertThree) || (horzMarking == center && horzMarking == horzThree)) {
-                            console.log("winner");
+                            console.log(`${getActivePlayer().name} is the winner!`);
+                            return true;
                             break
                         }
 
@@ -168,7 +190,8 @@ function GameController(
                         const vertThree = currentBoard[2][i].getValue();
                         const horzThree = currentBoard[i][2].getValue();
                         if ((vertMarking == center && vertMarking == vertThree) || (horzMarking == center && horzMarking == horzThree)) {
-                            console.log("winner");
+                            console.log(`${getActivePlayer().name} is the winner!`);
+                            return true;
                             break
                         }
 
@@ -185,7 +208,8 @@ function GameController(
                         const diagTwo = currentBoard[1][1].getValue();
                         const diagThree = currentBoard[0][0].getValue();
                         if ((marking == horzTwo && marking == horzThree) || (marking == vertTwo && marking == vertThree) || (marking == diagTwo && marking == diagThree)) {
-                            console.log("Winner");
+                            console.log(`${getActivePlayer().name} is the winner!`);
+                            return true;
                             break
                         }
                     }
@@ -197,16 +221,14 @@ function GameController(
                         const diagTwo = currentBoard[1][1].getValue();
                         const diagThree = currentBoard[0][0].getValue();
                         if ((marking == horzTwo && marking == horzThree) || (marking == vertTwo && marking == vertThree) || (marking == diagTwo && marking == diagThree)) {
-                            console.log("Winner");
+                            console.log(`${getActivePlayer().name} is the winner!`);
+                            return true;
                             break
                         }
                     }
                 }
+                return false;
                 }
-            }
-            // Switch player turn
-            switchPlayerTurn();
-            printNewRound();
 
         }
 
