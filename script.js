@@ -117,10 +117,10 @@ function GameController(
 
             //Find out if there's a winner
             const result = winCheck();
-            console.log(result);
+
 
             if (result == true) {
-                
+                console.log("Game over");
             } else if (result == false && counter == 9) {
                 console.log("It's a tie");
             } else {
@@ -144,7 +144,6 @@ function GameController(
                 //Is there a better way to check for these wins?
                 if (i === 0) {
                     const marking = currentBoard[0][i].getValue();
-                    console.log(marking);
                     if (marking == 'x') {
                         const vertTwo = currentBoard[1][i].getValue();
                         const vertThree = currentBoard[2][i].getValue();
@@ -199,7 +198,6 @@ function GameController(
 
                 } else if (i == 2) {
                     const marking = currentBoard[i][i].getValue();
-                    console.log(marking);
                     if (marking == 'x') {
                         const vertTwo = currentBoard[0][i].getValue();
                         const vertThree = currentBoard[1][i].getValue();
@@ -253,5 +251,8 @@ function GameController(
     play.playRound(2, 2);
     play.playRound(1, 0);
     play.playRound(1, 1);
+    play.playRound(2, 1);
+    play.playRound(0, 2);
+    play.playRound(1, 2);
     play.playRound(2, 0);
     play.playRound(0, 0);
