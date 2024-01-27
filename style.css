@@ -4,24 +4,57 @@
 }
 
 .container {
-    height: 80vh;
+
     display: grid;
     grid-template-columns: repeat(3, 200px);
     grid-template-rows: repeat(3, 200px);
     gap: 12px;
-    background-color: aliceblue;
+    background-color: rgb(14, 64, 14);
+    justify-content: center;
+    align-content: center;
+
 }
 
-.grid {
+button {
     background-color: green;
     display: flex;
     align-items: center;
     font-size: 48pt;
     justify-content: center;
+    color: tan;
 }
 
 .info {
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(14, 64, 14);
+    font-size: 28pt;
+    justify-content: space-around;
+}
+
+.form, form {
+    background-color: greenyellow;
+    font-size: 16pt;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.submit {
     background-color: black;
     color: white;
-    font-size: 28pt;
+    height: 16px;
+    font-size: 12pt;
+}
+
+.prompt {
+    background-color: green;
+}
+
+.info, .container {
+    padding: 12px;
+    height: 80vh;
+    padding: 12px;
+    border: solid;
+    color: tan;
 }

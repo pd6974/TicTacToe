@@ -1,8 +1,8 @@
 function Display() {
     const game = GameController();
-    const messageDiv = document.querySelector('.info');
+    const messageDiv = document.querySelector('.prompt');
     const boardDiv = document.querySelector('.container');
-    console.log(boardDiv);
+    
 
     const updateScreen = () => {
         //clear the board
@@ -26,26 +26,47 @@ function Display() {
                 cellButton.textContent = cell.getValue();
                 boardDiv.appendChild(cellButton);
             })
-        })
+        });
+
     }
 
 
-//Adds event listener to the board
-function clickHandlerBoard(e) {
-    const selectedColumn = e.target.dataset.column;
-    const selectedRow =  e.target.dataset.row;
-    // Make sure I've clicked a column and not the gaps in between
-    if (!selectedColumn) return;
-    
-    game.playRound(selectedRow, selectedColumn);
+    //Adds event listener to the board
+    function clickHandlerBoard(e) {
+        const board = Gameboard();
+        const selectedColumn = e.target.dataset.column;
+        const selectedRow = e.target.dataset.row;
+        const activePlayer = game.getActivePlayer();
+        // Make sure I've clicked a column and not the gaps in between
+        if (!selectedColumn) return;
+        
+        // Play the selected row and column in the game functions
+        const move = game.playRound(selectedRow, selectedColumn);
+        const win = game.winCheck();
+
+        if (move == false) {
+            return messageDiv.textContent = `${activePlayer.name}, That location is taken.  Please choose another.`
+
+        }
+
+        if (win == true) {
+            console.log("She's a winner baby")
+            updateScreen();
+            return messageDiv.textContent = `Congratulations ${activePlayer.name}! You have won!`
+        }
+
+
+        
+
+        // Updates the board 
+        updateScreen();
+    }
+    boardDiv.addEventListener("click", clickHandlerBoard);
+
+    // Initial render
     updateScreen();
-  }
-  boardDiv.addEventListener("click", clickHandlerBoard);
 
-  // Initial render
-  updateScreen();
-
-  // We don't need to return anything from this module because everything is encapsulated inside this screen controller.
+    // We don't need to return anything from this module because everything is encapsulated inside this screen controller.
 }
 
 function Gameboard() {
@@ -72,10 +93,12 @@ function Gameboard() {
     // but we'll need to check that it is empty first
     const placeMark = (row, column, player) => {
         const location = board[row][column].getValue();
-        if (location == 0) {
+        if (location == "") {
             board[row][column].addToken(player.token);
+            return true;
         } else {
-            console.log("Please choose another location.  This place is taken.")
+            console.log("Please choose another location.  This place is taken.");
+            return false;
         }
     };
 
@@ -158,144 +181,111 @@ function GameController(
             `Placing ${getActivePlayer().name}'s mark on the board...`
         );
 
-        board.placeMark(row, column, activePlayer);
-        counter++;
+        // Finds out if the move is valid
+        const move = board.placeMark(row, column, activePlayer);
+
+        // move will be true if valid and the game can continue
+        if (move == true) {
+        const result = winCheck();
+        console.log(result);
+        if (result == true) {
+            console.log("Game over");
+        } else if (result == false && counter == 9) {
+            console.log("It's a tie");
+        } else {
+            // Switch player turn
+            switchPlayerTurn();
+            printNewRound();
+        }
+        // if the move isn't valid, it will just print a new round
+        } else if (move == false) {
+            printNewRound();
+            return false
+        }
 
 
         /*  This is where we would check for a winner and handle that logic,
               such as a win message. */
 
-            //Find out if there's a winner
-            const result = winCheck();
+        //Find out if there's a winner
 
 
-            if (result == true) {
-                console.log("Game over");
-            } else if (result == false && counter == 9) {
-                console.log("It's a tie");
-            } else {
-                // Switch player turn
-                switchPlayerTurn();
-                printNewRound();
+
+
+    }
+
+    //This function checks for a winner.  It returns true/false?
+    function winCheck() {
+        //Get the current board
+        const currentBoard = board.getBoard();
+
+        //Loops first place in each array:
+        for (let i = 0; i < currentBoard.length; i++) {
+            //This condition properly checks for 3 wins top horizontal, vertical left, and \ diagnol
+            //Is there a better way to check for these wins?
+            const marking = currentBoard[0][0].getValue();
+            const centerThree = currentBoard[1][0].getValue();
+            const centerTwo = currentBoard[0][1].getValue();
+            const topRight = currentBoard[0][2].getValue();
+            const bottomLeft = currentBoard[2][0].getValue();
+            //This condition checks for top horizontal, left vertical and \ diagnol
+            if (marking !== '') {
+                const diagTwo = currentBoard[1][1].getValue();
+                const diagThree = currentBoard[2][2].getValue();
+                if ((marking === centerTwo && marking === topRight) ||
+                    (marking === centerThree && marking === bottomLeft) ||
+                    (marking === diagTwo && marking === diagThree)) {
+                    console.log("Winner");
+                    return true;
+                }
             }
-            
-            
-
-        }
-        
-        //This function checks for a winner.  Could it return true/false?
-        const winCheck = ()  => {
-            //Get the current board
-            const currentBoard = board.getBoard();
-
-            //Loops first place in each array:
-            for (let i = 0; i < currentBoard.length; i++) {
-                //This condition properly checks for 3 wins top horizontal, vertical left, and \ diagnol
-                //Is there a better way to check for these wins?
-                if (i === 0) {
-                    const marking = currentBoard[0][i].getValue();
-                    if (marking == 'x') {
-                        const vertTwo = currentBoard[1][i].getValue();
-                        const vertThree = currentBoard[2][i].getValue();
-                        const horzTwo = currentBoard[i][1].getValue();
-                        const horzThree = currentBoard[i][2].getValue();
-                        const diagTwo = currentBoard[1][1].getValue();
-                        const diagThree = currentBoard[2][2].getValue();
-                        if ((marking == horzTwo && marking == horzThree) || (marking == vertTwo && marking == vertThree) || (marking == diagTwo && marking == diagThree)) {
-                            console.log(`${getActivePlayer().name} is the winner!`);
-                            return true;
-                            break
-                        }
-                    }
-                    else if (marking == 'o') {
-                        const vertTwo = currentBoard[1][i].getValue();
-                        const vertThree = currentBoard[2][i].getValue();
-                        const horzTwo = currentBoard[i][1].getValue();
-                        const horzThree = currentBoard[i][2].getValue();
-                        const diagTwo = currentBoard[1][1].getValue();
-                        const diagThree = currentBoard[2][2].getValue();
-                        if ((marking == horzTwo && marking == horzThree) || (marking == vertTwo && marking == vertThree) || (marking == diagTwo && marking == diagThree)) {
-                            console.log(`${getActivePlayer().name} is the winner!`);
-                            return true;
-                            break
-                        }
-                    }
-                    //This conditions checks for center vertical and horizontal wins.
-                } else if (i == 1) {
-                    const vertMarking = currentBoard[0][i].getValue();
-                    const horzMarking = currentBoard[i][0].getValue();
-                    if (vertMarking == 'x' || horzMarking == 'x') {
-                        const center = currentBoard[i][i].getValue();
-                        const vertThree = currentBoard[2][i].getValue();
-                        const horzThree = currentBoard[i][2].getValue();
-                        if ((vertMarking == center && vertMarking == vertThree) || (horzMarking == center && horzMarking == horzThree)) {
-                            console.log(`${getActivePlayer().name} is the winner!`);
-                            return true;
-                            break
-                        }
-
-                    } else if (vertMarking == 'o' || horzMarking == 'o') {
-                        const center = currentBoard[i][i].getValue();
-                        const vertThree = currentBoard[2][i].getValue();
-                        const horzThree = currentBoard[i][2].getValue();
-                        if ((vertMarking == center && vertMarking == vertThree) || (horzMarking == center && horzMarking == horzThree)) {
-                            console.log(`${getActivePlayer().name} is the winner!`);
-                            return true;
-                            break
-                        }
-
-                    }
-
-                } else if (i == 2) {
-                    const marking = currentBoard[i][i].getValue();
-                    if (marking == 'x') {
-                        const vertTwo = currentBoard[0][i].getValue();
-                        const vertThree = currentBoard[1][i].getValue();
-                        const horzTwo = currentBoard[i][0].getValue();
-                        const horzThree = currentBoard[i][1].getValue();
-                        const diagTwo = currentBoard[1][1].getValue();
-                        const diagThree = currentBoard[0][0].getValue();
-                        if ((marking == horzTwo && marking == horzThree) || (marking == vertTwo && marking == vertThree) || (marking == diagTwo && marking == diagThree)) {
-                            console.log(`${getActivePlayer().name} is the winner!`);
-                            return true;
-                            break
-                        }
-                    }
-                    else if (marking == 'o') {
-                        const vertTwo = currentBoard[0][i].getValue();
-                        const vertThree = currentBoard[1][i].getValue();
-                        const horzTwo = currentBoard[i][0].getValue();
-                        const horzThree = currentBoard[i][1].getValue();
-                        const diagTwo = currentBoard[1][1].getValue();
-                        const diagThree = currentBoard[0][0].getValue();
-                        if ((marking == horzTwo && marking == horzThree) || (marking == vertTwo && marking == vertThree) || (marking == diagTwo && marking == diagThree)) {
-                            console.log(`${getActivePlayer().name} is the winner!`);
-                            return true;
-                            break
-                        }
-                    }
-                }
-                return false;
+            //This conditions checks for center vertical,  horizontal wins and / diagnol
+            const center = currentBoard[1][1].getValue();
+            if (center !== '') {
+                const vertThree = currentBoard[2][1].getValue();
+                const horzThree = currentBoard[1][2].getValue();
+                if ((vertThree === center && centerTwo === vertThree) ||
+                    (horzThree === center && centerThree === horzThree) ||
+                    (center === topRight && center === bottomLeft)) {
+                    console.log("winner");
+                    console.log(currentBoard);
+                    return true;
                 }
 
+            }
+            //This condition checks for bottom horizontal, right vertical 
+            const bottomRight = currentBoard[2][2].getValue();
+            if (bottomRight !== '') {
+                const vertThree = currentBoard[1][2].getValue();
+                const centerTwo = currentBoard[2][0].getValue();
+                const horzThree = currentBoard[2][1].getValue();
+                if ((bottomRight == centerTwo && bottomRight == horzThree) ||
+                    (bottomRight === vertThree && bottomRight == topRight)) {
+                    console.log("Winner");
+                    return true;
+
+                }
+            }
         }
+        return false;
+    }
 
 
 
 
 
-        // Initial play game message
-        printNewRound();
+    //Initial play game message
+    printNewRound();
 
-        // For the console version, we will only use playRound, but we will need
-        // getActivePlayer for the UI version, so I'm revealing it now
-        return {
-            playRound,
-            getActivePlayer,
-            getBoard: board.getBoard,
-            winCheck
-        };
-
+    // For the console version, we will only use playRound, but we will need
+    // getActivePlayer for the UI version, so I'm revealing it now
+    return {
+        playRound,
+        getActivePlayer,
+        getBoard: board.getBoard,
+        winCheck
     };
 
-    Display();
+};
+
+Display();
