@@ -44,6 +44,7 @@ function Display() {
         const move = game.playRound(selectedRow, selectedColumn);
         const win = game.winCheck();
 
+
         if (move == false) {
             return messageDiv.textContent = `${activePlayer.name}, That location is taken.  Please choose another.`
 
@@ -53,6 +54,10 @@ function Display() {
             console.log("She's a winner baby")
             updateScreen();
             return messageDiv.textContent = `Congratulations ${activePlayer.name}! You have won!`
+        }
+
+        if (move == -1) {
+            return messageDiv.textContent = `Sorry you tied, guess you're both losers :/`
         }
 
 
@@ -176,6 +181,7 @@ function GameController(
     let counter = 0;
 
     const playRound = (row, column) => {
+        counter++
         // Place mark for the current player
         console.log(
             `Placing ${getActivePlayer().name}'s mark on the board...`
@@ -192,6 +198,7 @@ function GameController(
             console.log("Game over");
         } else if (result == false && counter == 9) {
             console.log("It's a tie");
+            return -1;
         } else {
             // Switch player turn
             switchPlayerTurn();
@@ -283,7 +290,8 @@ function GameController(
         playRound,
         getActivePlayer,
         getBoard: board.getBoard,
-        winCheck
+        winCheck,
+        counter
     };
 
 };
