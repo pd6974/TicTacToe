@@ -1,18 +1,44 @@
 function Display() {
-    const game = GameController();
+
     const messageDiv = document.querySelector('.prompt');
     const boardDiv = document.querySelector('.container');
+    const players = []
+
+    function processForm(e) {
+        e.preventDefault();
+        const form = document.querySelector('form');
+        const data = Object.fromEntries(new FormData(form).entries());
+        players.push(data.player_one, data.player_two);
+        updateScreen(players);
+    }
+
+    const submit = document.querySelector('.submit');
+    submit.addEventListener('click', processForm);
+
     
 
-    const updateScreen = () => {
+    
+
+    const updateScreen = (opponents) => {
         //clear the board
         boardDiv.textContent = "";
+
+        if (!opponents) {
+            messageDiv.textContent = "Please fill out your names"
+        } else {
+        game = GameController(opponents[0], opponents[1]);
+
+
+        }
 
         //get the  newest version of the board
         const board = game.getBoard();
         const activePlayer = game.getActivePlayer();
 
+        
+
         messageDiv.textContent = `${activePlayer.name}'s turn... `;
+
 
         board.forEach((row, index2) => {
             row.forEach((cell, index) => {
@@ -30,49 +56,55 @@ function Display() {
 
     }
 
+    
+
 
     //Adds event listener to the board
     function clickHandlerBoard(e) {
-        const board = Gameboard();
         const selectedColumn = e.target.dataset.column;
         const selectedRow = e.target.dataset.row;
         const activePlayer = game.getActivePlayer();
         // Make sure I've clicked a column and not the gaps in between
         if (!selectedColumn) return;
-        
+
         // Play the selected row and column in the game functions
         const move = game.playRound(selectedRow, selectedColumn);
         const win = game.winCheck();
 
-
+        // If the move is invalid, it will prompt the user to a new selection:
         if (move == false) {
             return messageDiv.textContent = `${activePlayer.name}, That location is taken.  Please choose another.`
 
         }
 
+        // If the win check is true, dislpay winner:
         if (win == true) {
             console.log("She's a winner baby")
             updateScreen();
             return messageDiv.textContent = `Congratulations ${activePlayer.name}! You have won!`
         }
 
+        // If the last move creates a tie, display a tie:
         if (move == -1) {
             return messageDiv.textContent = `Sorry you tied, guess you're both losers :/`
         }
 
-
-        
-
         // Updates the board 
         updateScreen();
+        console.log(players);
     }
     boardDiv.addEventListener("click", clickHandlerBoard);
 
     // Initial render
-    updateScreen();
+    // updateScreen();
 
     // We don't need to return anything from this module because everything is encapsulated inside this screen controller.
+
 }
+
+
+
+
 
 function Gameboard() {
     const rows = 3;
@@ -100,6 +132,7 @@ function Gameboard() {
         const location = board[row][column].getValue();
         if (location == "") {
             board[row][column].addToken(player.token);
+            console.log(player.token);
             return true;
         } else {
             console.log("Please choose another location.  This place is taken.");
@@ -149,11 +182,15 @@ function Cell() {
 ** flow and state of the game's turns, as well as whether
 ** anybody has won the game
 */
-function GameController(
-    playerOneName = "Player One",
-    playerTwoName = "Player Two"
-) {
+function GameController(playerOneName, playerTwoName) {
     const board = Gameboard();
+    
+    if (!playerOneName) {
+        playerOneName = "Player One"
+    }
+    if (!playerTwoName) {
+        playerTwoName = "Player Two"
+    }
 
     const players = [
         {
@@ -165,6 +202,8 @@ function GameController(
             token: 'o'
         }
     ];
+
+    console.log(players);
 
     let activePlayer = players[0];
 
@@ -192,19 +231,18 @@ function GameController(
 
         // move will be true if valid and the game can continue
         if (move == true) {
-        const result = winCheck();
-        console.log(result);
-        if (result == true) {
-            console.log("Game over");
-        } else if (result == false && counter == 9) {
-            console.log("It's a tie");
-            return -1;
-        } else {
-            // Switch player turn
-            switchPlayerTurn();
-            printNewRound();
-        }
-        // if the move isn't valid, it will just print a new round
+            const result = winCheck();
+            if (result == true) {
+                console.log("Game over");
+            } else if (result == false && counter == 9) {
+                console.log("It's a tie");
+                return -1;
+            } else {
+                // Switch player turn
+                switchPlayerTurn();
+                printNewRound();
+            }
+            // if the move isn't valid, it will just print a new round
         } else if (move == false) {
             printNewRound();
             return false
@@ -282,7 +320,7 @@ function GameController(
 
 
     //Initial play game message
-    printNewRound();
+    // printNewRound();
 
     // For the console version, we will only use playRound, but we will need
     // getActivePlayer for the UI version, so I'm revealing it now
