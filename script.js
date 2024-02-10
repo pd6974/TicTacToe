@@ -3,21 +3,20 @@ function Display() {
     const messageDiv = document.querySelector('.prompt');
     const boardDiv = document.querySelector('.container');
     const players = []
+    let game
 
     function processForm(e) {
         e.preventDefault();
         const form = document.querySelector('form');
         const data = Object.fromEntries(new FormData(form).entries());
+        players.splice(0, players.length);
         players.push(data.player_one, data.player_two);
+        game = GameController(players[0], players[1]);
         updateScreen(players);
     }
 
     const submit = document.querySelector('.submit');
     submit.addEventListener('click', processForm);
-
-    
-
-    
 
     const updateScreen = (opponents) => {
         //clear the board
@@ -26,10 +25,7 @@ function Display() {
         if (!opponents) {
             messageDiv.textContent = "Please fill out your names"
         } else {
-        game = GameController(opponents[0], opponents[1]);
-
-
-        }
+    
 
         //get the  newest version of the board
         const board = game.getBoard();
@@ -53,6 +49,8 @@ function Display() {
                 boardDiv.appendChild(cellButton);
             })
         });
+
+    }
 
     }
 
@@ -80,23 +78,24 @@ function Display() {
         // If the win check is true, dislpay winner:
         if (win == true) {
             console.log("She's a winner baby")
-            updateScreen();
+            updateScreen(players);
             return messageDiv.textContent = `Congratulations ${activePlayer.name}! You have won!`
         }
 
         // If the last move creates a tie, display a tie:
         if (move == -1) {
+          updateScreen(players);
             return messageDiv.textContent = `Sorry you tied, guess you're both losers :/`
         }
 
         // Updates the board 
-        updateScreen();
+        updateScreen(players);
         console.log(players);
     }
     boardDiv.addEventListener("click", clickHandlerBoard);
 
     // Initial render
-    // updateScreen();
+    updateScreen();
 
     // We don't need to return anything from this module because everything is encapsulated inside this screen controller.
 
@@ -228,6 +227,7 @@ function GameController(playerOneName, playerTwoName) {
 
         // Finds out if the move is valid
         const move = board.placeMark(row, column, activePlayer);
+        console.log(counter);
 
         // move will be true if valid and the game can continue
         if (move == true) {
@@ -244,6 +244,7 @@ function GameController(playerOneName, playerTwoName) {
             }
             // if the move isn't valid, it will just print a new round
         } else if (move == false) {
+            counter--
             printNewRound();
             return false
         }
